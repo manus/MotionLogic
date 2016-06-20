@@ -1,0 +1,139 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Geolocation</title>
+    <meta name="viewport" content="initial-scale=1.0, user-scalable=no">
+    <meta charset="utf-8">
+    <style>
+        html, body {
+        height: 100%;
+        margin: 0;
+        padding: 0;
+        }
+        #map {
+        height: 100%;
+        }
+    </style>
+</head>
+<body>
+<div id="map"></div>
+<script src="js/jquery.js"></script>
+<script src="js/map.js"></script>
+<script>
+
+    var egypt;
+    var egyptCellTowers;
+
+    function degreeToRadian(degree)
+    {
+        var pi = 3.14159
+        var rad = (degree * pi)/180
+        return rad
+    }
+
+    function distance_haversine(lat1, long1, lat2, long2)
+    {
+        var R = 6371e3; // gives d in metres
+        var rad1 = degreeToRadian(lat1)
+        var rad2 = degreeToRadian(lat2)
+        var diffLatRad = degreeToRadian(lat2-lat1);
+        var diffLongRad = degreeToRadian(long2-long1);
+
+        var a = Math.sin(diffLatRad/2) * Math.sin(diffLatRad/2) +
+                Math.cos(rad1) * Math.cos(rad2) *
+                Math.sin(diffLongRad/2) * Math.sin(diffLongRad/2);
+        var c = 2 * Math.atan2(Math.sqrt(a), Math.sqrt(1-a));
+        var d = R * c;
+        return d
+    }
+
+    function initMap() {
+
+  var mapOptions = {
+    zoom: 6,
+    center: new google.maps.LatLng(26.6082, 29.9048),
+  };
+
+  var map = new google.maps.Map(document.getElementById('map'),
+      mapOptions);
+
+  $.ajax({
+        type: "GET",
+        url: "rest/v1/getPolygonCoordinates/egypt",
+        success: function (result)
+        {
+			var coordinates = result;
+			var paths = []
+			for(index=0;index<coordinates.length;++index)
+			{
+                var coordinate = coordinates[index]
+                var path = new google.maps.LatLng(coordinate.latitude, coordinate.longitude)
+                paths.push(path)
+
+			}
+			egypt = new google.maps.Polygon({
+			    paths: paths
+			});
+
+            google.maps.event.addListener(map, 'click', onClick);
+		}
+    });
+
+  $.ajax({
+        type: "GET",
+        url: "rest/v1/getCelltowerCoordinates/egypt",
+        success: function (result)
+        {
+			egyptCellTowers = result;
+			for(index=0;index<egyptCellTowers.length;++index)
+			{
+                var tower = egyptCellTowers[index]
+                var pos = new google.maps.LatLng(tower.latitude, tower.longitude)
+                var circle = addCircle(map, pos, tower.radius, '#FF0000', 0.8, '#FF0000', 0.35);
+                google.maps.event.addListener(circle, 'click', onClick);
+			}
+		}
+    });
+
+    function onClick(event)
+    {
+        var insideEgypt = google.maps.geometry.poly.containsLocation(event.latLng, egypt)
+        if(!insideEgypt)
+        {
+            alert("Given point is outside Egypt");
+        }
+        else
+        {
+            var towerFound;
+            var clickedLat = event.latLng.lat();
+            var clickedLong = event.latLng.lng();
+            for(index=0;index<egyptCellTowers.length;++index)
+            {
+                var tower = egyptCellTowers[index]
+                var distance = distance_haversine(tower.latitude, tower.longitude, clickedLat, clickedLong);
+                if(distance <= tower.radius)
+                {
+                    towerFound = tower
+                    break;
+                }
+            }
+            if(towerFound == null)
+            {
+                alert("Given point is inside Egypt but outside cell coverage");
+            }
+            else
+            {
+                alert("Given point is inside Egypt and inside coverage of towerId [" + towerFound.id + "]");
+            }
+        }
+
+    }
+
+}
+
+</script>
+<script async defer
+        src="https://maps.googleapis.com/maps/api/js?callback=initMap">
+</script>
+</body>
+</html>

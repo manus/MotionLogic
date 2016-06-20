@@ -1,0 +1,8 @@
+/Users/manu/work/myprojects/MotionLogic/src/main/java/com/motionlogic/map/dao/MapDBDAO.java
+/Users/manu/work/myprojects/MotionLogic/src/main/java/com/motionlogic/map/servlets/InitServlet.java
+/Users/manu/work/myprojects/MotionLogic/src/main/java/com/motionlogic/map/pojo/CountryPolygonCoordinates.java
+/Users/manu/work/myprojects/MotionLogic/src/main/java/com/motionlogic/map/dbmanager/MapDBManager.java
+/Users/manu/work/myprojects/MotionLogic/src/main/java/com/motionlogic/map/pojo/CountryCelltowerCoordinates.java
+/Users/manu/work/myprojects/MotionLogic/src/main/java/com/motionlogic/map/dbmanager/MapDBManagerImpl.java
+/Users/manu/work/myprojects/MotionLogic/src/main/java/com/motionlogic/map/context/ContextManager.java
+/Users/manu/work/myprojects/MotionLogic/src/main/java/com/motionlogic/map/services/MapService.java

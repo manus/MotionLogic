@@ -1,0 +1,59 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<beans xmlns="http://www.springframework.org/schema/beans"
+       xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+       xmlns:tx="http://www.springframework.org/schema/tx"
+       xmlns:context="http://www.springframework.org/schema/context"
+       xsi:schemaLocation="
+     http://www.springframework.org/schema/beans http://www.springframework.org/schema/beans/spring-beans-2.5.xsd
+     http://www.springframework.org/schema/tx http://www.springframework.org/schema/tx/spring-tx-2.5.xsd
+     http://www.springframework.org/schema/context http://www.springframework.org/schema/context/spring-context-3.0.xsd">
+
+    <bean id="dataSource" class="com.mchange.v2.c3p0.ComboPooledDataSource" destroy-method="close">
+        <property name="driverClass" value="com.mysql.jdbc.Driver"/>
+        <property name="jdbcUrl" value="${mysql.userdb.dburl}"/>
+        <property name="user" value="${mysql.userdb.username}"/>
+        <property name="password" value="${mysql.userdb.password}"/>
+        <property name="initialPoolSize" value="5"></property>
+        <property name="minPoolSize" value="5"></property>
+        <property name="maxPoolSize" value="15"/>
+        <property name="checkoutTimeout" value="5000"/>
+        <property name="maxStatements" value="50"></property>
+        <property name="testConnectionOnCheckin" value="true"></property>
+        <property name="idleConnectionTestPeriod" value="60"></property>
+    </bean>
+
+    <context:property-placeholder location="classpath:config.properties"/>
+
+    <bean id="txManager" class="org.springframework.jdbc.datasource.DataSourceTransactionManager">
+        <property name="dataSource" ref="dataSource"/>
+    </bean>
+
+    <bean id="txInterceptor" class="org.springframework.transaction.interceptor.TransactionInterceptor">
+        <property name="transactionManager" ref="txManager" />
+        <property name="transactionAttributeSource">
+            <bean class="org.springframework.transaction.annotation.AnnotationTransactionAttributeSource" />
+        </property>
+    </bean>
+
+    <bean class="org.springframework.aop.framework.autoproxy.DefaultAdvisorAutoProxyCreator" />
+
+    <bean id="txAdvisor" class="org.springframework.transaction.interceptor.TransactionAttributeSourceAdvisor">
+        <property name="transactionInterceptor" ref="txInterceptor" />
+    </bean>
+
+    <bean id="sqlSessionFactory" class="org.mybatis.spring.SqlSessionFactoryBean">
+        <property name="dataSource" ref="dataSource" />
+        <property name="configLocation" value="classpath:mapdb-config.xml"/>
+        <property name="mapperLocations" value="classpath:mappers/mapdb/**/*.xml" />
+    </bean>
+
+    <bean id="mapDBMapper" class="org.mybatis.spring.mapper.MapperFactoryBean">
+        <property name="mapperInterface" value="com.motionlogic.map.dao.MapDBDAO" />
+        <property name="sqlSessionFactory" ref="sqlSessionFactory" />
+    </bean>
+
+    <bean id="com.motionlogic.map.dbmanager.MapDBManager" class="com.motionlogic.map.dbmanager.MapDBManagerImpl">
+        <property name="mapDBDAO" ref="mapDBMapper"/>
+    </bean>
+
+</beans>

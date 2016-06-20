@@ -1,0 +1,37 @@
+A brief outline of the solution:
+
+Technology used:
+
+Database - mysql. Please use create.sql file inside MotionLogic folder to create the required schema
+Programming language - Java for backend and javascript for frontend. For the java backend to connect to mysql, user/password details (in MotionLogic/src/main/resources/common.properties) will need to be updated for your setup.
+Server - Apache tomcat (or any other servlet container).
+Google maps for visualization
+
+Building:
+
+The java code (for backend) can be build using maven.
+
+Deployment:
+
+There is a pre build war in the package (MotionLogic/target/map.war) which can directly be deployed in apache tomcat webapps folder. The URL for viewing the solution should be http://localhost:8080/map/map.html (if the server is running on 8080 port and deployed war is named map.war)
+
+Database:
+
+1) Coordinates (latitudes and longitudes) of Egypt's boundary are saved in table country_polygon_coordinates
+2) Coordinates (latitudes and longitudes) of cell towers inside Egypt are saved in table country_celltower_coordinates. Please note that these are randomly chosen coordinates inside Egypt and does nor reflect actual cell tower locations. The data from opencellid was huge. So instead of filtering actual cell tower locations, I just used random coordinates inside Egypt for cell tower locations (with coverage radius of 10000 m)
+
+Code Flow:
+
+1) Fetch all the coordinates of cell tower locations for Egypt and mark a circle around the coordinates with cell tower coverage radius.
+2) Fetch all the coordinates of Egypt's boundry and on the client, create a Polygon in javascript using google maps javascript library.
+3) When a point is clicked, first check if the point is inside Egypt's polygon. This is done on the client again using javascript code. If point is outside Egypt, alert that point is outside Egypt. 
+4) If point is inside Egypt, calculate the distance of the point from every cell tower one by one using latitudes and longitudes of the clicked point and cell tower. I do this again in javascript code using haversine formula.
+5) If the distance is less than cell coverage radius for any of the cell tower (the point is in cell coverage for that tower), break the code there and alert the tower id in whose coverage the point is.
+6) If the distance is more than cell coverage radius for all cell towers, the point is outside cell coverage area.
+
+Scaling:
+
+1) I have tried to use the client's computation power (since most of the computation is done on the client side javascript code).
+2) In the database we can have data for all countries. Once a point is clicked, we can first try to find which country the point is in, then load cell tower locations for that country and then check if that point is in cell coverage area.
+
+

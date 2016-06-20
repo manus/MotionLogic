@@ -1,0 +1,8 @@
+com/motionlogic/map/dbmanager/MapDBManager.class
+com/motionlogic/map/pojo/CountryPolygonCoordinates.class
+com/motionlogic/map/servlets/InitServlet.class
+com/motionlogic/map/dbmanager/MapDBManagerImpl.class
+com/motionlogic/map/context/ContextManager.class
+com/motionlogic/map/services/MapService.class
+com/motionlogic/map/dao/MapDBDAO.class
+com/motionlogic/map/pojo/CountryCelltowerCoordinates.class

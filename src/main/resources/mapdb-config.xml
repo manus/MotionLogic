@@ -1,0 +1,10 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE configuration
+        PUBLIC "-//mybatis.org//DTD Config 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-config.dtd">
+<configuration>
+    <typeAliases>
+        <typeAlias type="com.motionlogic.map.pojo.CountryPolygonCoordinates" alias="CountryPolygonCoordinates"/>
+        <typeAlias type="com.motionlogic.map.pojo.CountryCelltowerCoordinates" alias="CountryCelltowerCoordinates"/>
+    </typeAliases>
+</configuration>

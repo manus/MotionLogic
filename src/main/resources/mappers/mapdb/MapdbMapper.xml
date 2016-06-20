@@ -1,0 +1,27 @@
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="com.motionlogic.map.dao.MapDBDAO">
+
+    <resultMap id="countryPolygonCoordinates" type="CountryPolygonCoordinates">
+        <result property="id" column="id" />
+        <result property="countryName" column="country_name" />
+        <result property="latitude" column="latitude" />
+        <result property="longitude" column="longitude" />
+    </resultMap>
+
+    <resultMap id="countryCelltowerCoordinates" type="CountryCelltowerCoordinates">
+        <result property="id" column="id" />
+        <result property="countryName" column="country_name" />
+        <result property="latitude" column="latitude" />
+        <result property="longitude" column="longitude" />
+        <result property="radius" column="radius" />
+    </resultMap>
+
+    <select id="getCountryPolygonCoordinates" parameterType="String" resultMap="countryPolygonCoordinates">
+        select * from country_polygon_coordinates where country_name = #{param1}
+    </select>
+
+    <select id="getCountryCelltowerCoordinates" parameterType="String" resultMap="countryCelltowerCoordinates">
+        select * from country_celltower_coordinates where country_name = #{param1}
+    </select>
+
+</mapper>
